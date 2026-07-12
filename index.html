@@ -149,6 +149,11 @@ h1.hero-name{font-family:var(--font-display); font-weight:800; font-size:clamp(3
 .btn.ghost{color:var(--text); background:rgba(255,255,255,0.02);}
 .btn.ghost:hover{border-color:var(--cyan); color:var(--cyan); transform:translateY(-2px);}
 .hero-icons{display:flex; gap:14px;}
+.fun-fact{
+  margin-top:24px; font-family:var(--font-mono); font-size:13px; color:var(--text-dim);
+  display:flex; align-items:center; gap:8px;
+}
+.fun-fact .bolt{color:var(--purple);}
 .icon-btn{
   width:40px; height:40px; border-radius:11px; border:1px solid var(--border); display:flex; align-items:center;
   justify-content:center; color:var(--text-muted); transition:all .2s ease; font-size:15px;
@@ -337,8 +342,71 @@ footer{border-top:1px solid var(--border); padding:44px 0;}
 #scrollTop:hover{filter:brightness(1.1);}
 
 /* ===================================================
+   INTERACTIVE EXTRAS
+=================================================== */
+#cursorGlow{
+  position:fixed; top:0; left:0; width:420px; height:420px; border-radius:50%; pointer-events:none; z-index:5;
+  background:radial-gradient(circle, rgba(139,92,246,0.14), rgba(34,211,238,0.08) 40%, transparent 70%);
+  transform:translate(-50%,-50%); mix-blend-mode:screen; transition:opacity .3s ease;
+  opacity:0;
+}
+.tilt{transform-style:preserve-3d; transition:transform .15s ease-out;}
+.btn.magnetic{transition:transform .15s ease-out;}
+@media (hover:none), (pointer:coarse){ #cursorGlow{ display:none; } }
+
+/* ===================================================
+   DECORATIVE POLISH
+=================================================== */
+/* Custom scrollbar */
+::-webkit-scrollbar{width:10px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--surface-2); border-radius:10px; border:2px solid var(--bg);}
+::-webkit-scrollbar-thumb:hover{background:var(--purple);}
+html{scrollbar-color:var(--surface-2) var(--bg); scrollbar-width:thin;}
+
+/* Animated underline on nav links */
+.nav-links a:not(.cv-btn){position:relative;}
+.nav-links a:not(.cv-btn)::after{
+  content:''; position:absolute; left:50%; right:50%; bottom:2px; height:2px; background:var(--grad);
+  border-radius:2px; transition:left .25s ease, right .25s ease;
+}
+.nav-links a:not(.cv-btn):hover::after, .nav-links a.active::after{left:14px; right:14px;}
+
+/* Glow on chip hover */
+.chip{transition:all .2s ease; cursor:default;}
+.chip:hover{border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 14px -3px rgba(34,211,238,0.5); transform:translateY(-2px);}
+
+/* Corner bracket accents on project cards */
+.proj-card{position:relative;}
+.proj-card::after{
+  content:''; position:absolute; top:10px; right:10px; width:14px; height:14px;
+  border-top:2px solid var(--border); border-right:2px solid var(--border); opacity:0; transition:opacity .25s ease, border-color .25s ease;
+}
+.proj-card:hover::after{opacity:1; border-color:var(--cyan);}
+
+/* Floating ambient gradient blobs */
+.blob{
+  position:fixed; border-radius:50%; filter:blur(70px); pointer-events:none; z-index:0; opacity:.18;
+}
+.blob-1{width:380px; height:380px; background:var(--purple); top:8%; left:-120px; animation:floatBlob1 22s ease-in-out infinite;}
+.blob-2{width:320px; height:320px; background:var(--cyan); top:55%; right:-100px; animation:floatBlob2 26s ease-in-out infinite;}
+.blob-3{width:280px; height:280px; background:var(--purple); bottom:5%; left:30%; animation:floatBlob1 30s ease-in-out infinite reverse;}
+@keyframes floatBlob1{
+  0%,100%{transform:translate(0,0) scale(1);}
+  33%{transform:translate(60px,-40px) scale(1.1);}
+  66%{transform:translate(-30px,50px) scale(0.95);}
+}
+@keyframes floatBlob2{
+  0%,100%{transform:translate(0,0) scale(1);}
+  50%{transform:translate(-70px,40px) scale(1.15);}
+}
+section, main, footer{position:relative; z-index:1;}
+
+/* ===================================================
    RESPONSIVE
 =================================================== */
+
+
 @media(max-width:900px){
   .about-grid, .skills-grid, .edu-grid, .contact-grid{grid-template-columns:1fr;}
   .proj-grid{grid-template-columns:1fr;}
@@ -371,6 +439,12 @@ footer{border-top:1px solid var(--border); padding:44px 0;}
 </style>
 </head>
 <body>
+<div id="cursorGlow" aria-hidden="true"></div>
+<div class="blob blob-1" aria-hidden="true"></div>
+<div class="blob blob-2" aria-hidden="true"></div>
+<div class="blob blob-3" aria-hidden="true"></div>
+
+
 
 <!-- ============ LOADER ============ -->
 <div id="loader" aria-hidden="true">
@@ -409,14 +483,15 @@ footer{border-top:1px solid var(--border); padding:44px 0;}
         <p class="hero-tagline">"Building scalable backend systems and intelligent automation solutions that create measurable impact."</p>
         <p class="hero-desc">Java Software Engineer with 3.5+ years designing Spring Boot microservices, REST APIs and cloud-integrated backend systems — paired with an MSc in Artificial Intelligence and hands-on LLM evaluation experience.</p>
         <div class="hero-cta">
-          <a class="btn primary" href="#projects">View My Work</a>
-          <a class="btn ghost" href="#contact">Contact Me</a>
+          <a class="btn primary magnetic" href="#projects">View My Work</a>
+          <a class="btn ghost magnetic" href="#contact">Contact Me</a>
         </div>
         <div class="hero-icons">
           <a class="icon-btn" href="https://linkedin.com/in/priyanka-t-17535219b" target="_blank" rel="noopener" aria-label="LinkedIn profile"><i class="fa-brands fa-linkedin-in"></i></a>
           <a class="icon-btn" href="mailto:tambe2708@gmail.com" aria-label="Send email"><i class="fa-solid fa-envelope"></i></a>
           <a class="icon-btn" href="#" aria-label="GitHub profile (add your link)"><i class="fa-brands fa-github"></i></a>
         </div>
+        <div class="fun-fact"><span class="bolt">⚡</span> Fun fact: I speak Java fluently. English is a close second.</div>
       </div>
       <div class="hero-photo-wrap">
         <div class="hero-photo-glow"></div>
@@ -441,12 +516,12 @@ footer{border-top:1px solid var(--border); padding:44px 0;}
           <p>Across my professional experience I've automated 200+ operational workflows, improved system uptime by 15%, reduced alert noise by 60%, accelerated incident resolution by 40%, and cut manual processing effort by 45%.</p>
         </div>
         <div class="reveal stat-grid">
-          <div class="stat-card"><div class="icon"><i class="fa-solid fa-briefcase"></i></div><div class="num" data-count="3.5" data-suffix="+">0</div><div class="lbl">YEARS OF EXPERIENCE</div></div>
-          <div class="stat-card"><div class="icon"><i class="fa-solid fa-robot"></i></div><div class="num" data-count="200" data-suffix="+">0</div><div class="lbl">WORKFLOWS AUTOMATED</div></div>
-          <div class="stat-card"><div class="icon"><i class="fa-solid fa-bell-slash"></i></div><div class="num" data-count="60" data-suffix="%">0</div><div class="lbl">ALERT NOISE REDUCTION</div></div>
-          <div class="stat-card"><div class="icon"><i class="fa-solid fa-gauge-high"></i></div><div class="num" data-count="45" data-suffix="%">0</div><div class="lbl">MANUAL EFFORT REDUCED</div></div>
-          <div class="stat-card"><div class="icon"><i class="fa-solid fa-arrow-trend-up"></i></div><div class="num" data-count="15" data-suffix="%">0</div><div class="lbl">UPTIME IMPROVEMENT</div></div>
-          <div class="stat-card"><div class="icon"><i class="fa-solid fa-graduation-cap"></i></div><div class="num" style="font-size:16px;">MSc AI</div><div class="lbl">MUNSTER TECH. UNIVERSITY</div></div>
+          <div class="stat-card tilt"><div class="icon"><i class="fa-solid fa-briefcase"></i></div><div class="num" data-count="3.5" data-suffix="+">0</div><div class="lbl">YEARS OF EXPERIENCE</div></div>
+          <div class="stat-card tilt"><div class="icon"><i class="fa-solid fa-robot"></i></div><div class="num" data-count="200" data-suffix="+">0</div><div class="lbl">WORKFLOWS AUTOMATED</div></div>
+          <div class="stat-card tilt"><div class="icon"><i class="fa-solid fa-bell-slash"></i></div><div class="num" data-count="60" data-suffix="%">0</div><div class="lbl">ALERT NOISE REDUCTION</div></div>
+          <div class="stat-card tilt"><div class="icon"><i class="fa-solid fa-gauge-high"></i></div><div class="num" data-count="45" data-suffix="%">0</div><div class="lbl">MANUAL EFFORT REDUCED</div></div>
+          <div class="stat-card tilt"><div class="icon"><i class="fa-solid fa-arrow-trend-up"></i></div><div class="num" data-count="15" data-suffix="%">0</div><div class="lbl">UPTIME IMPROVEMENT</div></div>
+          <div class="stat-card tilt"><div class="icon"><i class="fa-solid fa-graduation-cap"></i></div><div class="num" style="font-size:16px;">MSc AI</div><div class="lbl">MUNSTER TECH. UNIVERSITY</div></div>
         </div>
       </div>
     </div>
@@ -590,7 +665,7 @@ footer{border-top:1px solid var(--border); padding:44px 0;}
       <h2 class="section-title reveal">Selected work</h2>
       <div class="proj-grid">
 
-        <div class="proj-card reveal">
+        <div class="proj-card reveal tilt">
           <h3>EUC Asset Management Platform</h3>
           <p>A Java and Spring Boot microservices platform automating onboarding and offboarding of end-user computing assets for telecom client DTAC.</p>
           <div class="proj-result"><i class="fa-solid fa-chart-line"></i> Reduced manual processing effort by 45%</div>
@@ -601,7 +676,7 @@ footer{border-top:1px solid var(--border); padding:44px 0;}
           </div>
         </div>
 
-        <div class="proj-card reveal">
+        <div class="proj-card reveal tilt">
           <h3>AIOps &amp; IT Infrastructure Monitoring</h3>
           <p>A real-time AIOps solution using monitoring data and machine learning to detect anomalies and prevent incidents for telecom client IOH.</p>
           <div class="proj-result"><i class="fa-solid fa-chart-line"></i> Reduced alert noise 60%, improved uptime 15%</div>
@@ -612,7 +687,7 @@ footer{border-top:1px solid var(--border); padding:44px 0;}
           </div>
         </div>
 
-        <div class="proj-card reveal">
+        <div class="proj-card reveal tilt">
           <h3>IT Support Ticket Management System</h3>
           <p>A freelance Java/Spring Boot ticketing system with automated assignment, SLA tracking and a knowledge-base recommendation feature.</p>
           <div class="proj-result"><i class="fa-solid fa-chart-line"></i> Full REST API + role-based access control</div>
@@ -623,7 +698,7 @@ footer{border-top:1px solid var(--border); padding:44px 0;}
           </div>
         </div>
 
-        <div class="proj-card reveal">
+        <div class="proj-card reveal tilt">
           <h3>LLM Evaluation — MSc Thesis</h3>
           <p>An evaluation framework comparing GPT-2 and Mistral on 1,954 real-world IT support questions, using semantic and human assessment.</p>
           <div class="proj-result"><i class="fa-solid fa-chart-line"></i> 50% semantic alignment, 4.0/5 human score</div>
@@ -703,7 +778,7 @@ footer{border-top:1px solid var(--border); padding:44px 0;}
           </div>
           <div class="field"><label for="cf-subject">Subject</label><input id="cf-subject" name="subject" type="text" required aria-required="true"></div>
           <div class="field"><label for="cf-message">Message</label><textarea id="cf-message" name="message" required aria-required="true"></textarea></div>
-          <button class="btn primary" type="submit"><i class="fa-solid fa-paper-plane"></i> Send Message</button>
+          <button class="btn primary magnetic" type="submit"><i class="fa-solid fa-paper-plane"></i> Send Message</button>
           <div class="form-success" id="formSuccess" role="status"><i class="fa-solid fa-circle-check"></i> Thanks! Your message has been noted — I'll get back to you soon.</div>
         </form>
       </div>
@@ -724,6 +799,7 @@ footer{border-top:1px solid var(--border); padding:44px 0;}
       </div>
     </div>
     <div class="foot-note">Designed and developed with HTML, CSS and JavaScript · © <span id="year"></span> Priyanka Tambe</div>
+    <div class="foot-note" style="margin-top:6px; color:var(--purple);">Built with Spring Boot energy and unreasonable amounts of coffee.</div>
   </div>
 </footer>
 
@@ -929,8 +1005,76 @@ document.getElementById('scrollTop').addEventListener('click', () => {
 document.getElementById('year').textContent = new Date().getFullYear();
 
 /* ===================================================
+   INTERACTIVE EXTRAS — cursor glow, tilt, magnetic buttons, scramble titles
+   (skipped on touch devices and when reduced motion is preferred)
+=================================================== */
+const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+if (isFinePointer && !reduceMotion) {
+  // Cursor glow follows the mouse
+  const glow = document.getElementById('cursorGlow');
+  window.addEventListener('mousemove', (e) => {
+    glow.style.opacity = '1';
+    glow.style.left = e.clientX + 'px';
+    glow.style.top = e.clientY + 'px';
+  });
+  document.addEventListener('mouseleave', () => { glow.style.opacity = '0'; });
+
+  // Tilt effect on cards
+  document.querySelectorAll('.tilt').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = `perspective(700px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateY(-4px)`;
+    });
+    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+  });
+
+  // Magnetic buttons — pull slightly toward the cursor
+  document.querySelectorAll('.magnetic').forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+      const r = btn.getBoundingClientRect();
+      const x = e.clientX - (r.left + r.width / 2);
+      const y = e.clientY - (r.top + r.height / 2);
+      btn.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px)`;
+    });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+  });
+}
+
+// Scramble/decode text effect on section titles as they enter view
+const scrambleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&*';
+function scrambleInto(el){
+  const final = el.textContent;
+  if (reduceMotion) return; // leave text as-is
+  let frame = 0;
+  const totalFrames = 24;
+  const len = final.length;
+  const interval = setInterval(() => {
+    frame++;
+    let out = '';
+    for (let i = 0; i < len; i++){
+      const revealPoint = (i / len) * totalFrames;
+      if (frame >= revealPoint + 6) out += final[i];
+      else if (final[i] === ' ') out += ' ';
+      else out += scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
+    }
+    el.textContent = out;
+    if (frame >= totalFrames + 6){ el.textContent = final; clearInterval(interval); }
+  }, 28);
+}
+const titleIo = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting){ scrambleInto(e.target); titleIo.unobserve(e.target); }
+  });
+}, { threshold: 0.6 });
+document.querySelectorAll('.section-title').forEach(t => titleIo.observe(t));
+
+/* ===================================================
    PARTICLE NETWORK BACKGROUND (hero)
 =================================================== */
+
 if (!reduceMotion) {
   const canvas = document.getElementById('particles');
   const ctx = canvas.getContext('2d');
@@ -977,6 +1121,24 @@ if (!reduceMotion) {
   window.addEventListener('resize', () => { resize(); initParticles(); });
   resize(); initParticles(); draw();
 }
+</script>
+<!-- ===================================================
+     LIVE CHAT WIDGET (Tawk.to — free live chat)
+     To activate: 1) Sign up free at https://www.tawk.to
+                  2) Go to Administration → Chat Widget → copy your Property ID and Widget ID
+                  3) Replace YOUR_PROPERTY_ID and YOUR_WIDGET_ID below with your own values
+     Until replaced, this widget will not load (placeholder IDs are not real).
+=================================================== -->
+<script type="text/javascript">
+var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+(function(){
+var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+s1.async = true;
+s1.src = 'https://embed.tawk.to/YOUR_PROPERTY_ID/YOUR_WIDGET_ID';
+s1.charset = 'UTF-8';
+s1.setAttribute('crossorigin', '*');
+s0.parentNode.insertBefore(s1, s0);
+})();
 </script>
 
 </body>
